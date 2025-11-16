@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DapperWebApi", "Dapper.WebApi\DapperWebApi.csproj", "{0A38749B-C761-4DA8-BF69-F8880E9DFD2B}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "react_project", "React_Project\react_project.esproj", "{FDE51270-60E4-4531-8375-CDC01CEC8B2A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0A38749B-C761-4DA8-BF69-F8880E9DFD2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A38749B-C761-4DA8-BF69-F8880E9DFD2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A38749B-C761-4DA8-BF69-F8880E9DFD2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A38749B-C761-4DA8-BF69-F8880E9DFD2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDE51270-60E4-4531-8375-CDC01CEC8B2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDE51270-60E4-4531-8375-CDC01CEC8B2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDE51270-60E4-4531-8375-CDC01CEC8B2A}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{FDE51270-60E4-4531-8375-CDC01CEC8B2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDE51270-60E4-4531-8375-CDC01CEC8B2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDE51270-60E4-4531-8375-CDC01CEC8B2A}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B20B9FC3-7BC8-4395-8C51-54F86909C4D1}
+	EndGlobalSection
+EndGlobal
