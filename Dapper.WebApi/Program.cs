@@ -52,11 +52,14 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowLocalDev", policy =>
     {
-        policy.AllowAnyHeader()
-        .AllowAnyMethod()
-        .WithOrigins("http://localhost:3000");
+        policy
+            .WithOrigins("http://localhost:5173", "http://localhost:3000")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
+
 
 var app = builder.Build();
 
@@ -66,15 +69,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    app.UseHttpsRedirection();
+}
 
-app.UseHttpsRedirection();
-
-// Auth middleware
+app.UseRouting();
+app.UseCors("AllowLocalDev");
 app.UseAuthentication();
 app.UseAuthorization();
-
-app.UseCors("AllowLocalDev");
-
 app.MapControllers();
 
 app.Run();
