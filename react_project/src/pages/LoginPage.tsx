@@ -1,10 +1,14 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api, { setAuthToken } from "../services/api";
 import type { LoginResponse } from "../types/LoginResponse";
+
 
 export default function LoginPage() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+
+    const navigate = useNavigate();
 
     const login = async () => {
         try {
@@ -13,11 +17,21 @@ export default function LoginPage() {
                 password,
             });
 
-            setAuthToken(res.data.token);
-            localStorage.setItem("token", res.data.token);
-            localStorage.setItem("role", res.data.role);
+            const { token, role } = res.data;
 
-            alert("Logged in as: " + res.data.role);
+            setAuthToken(token);
+            localStorage.setItem("token", token);
+            localStorage.setItem("role", role);
+
+            alert("Logged in as: " + role);
+
+            // Redirect based on role
+            if (role === "Admin") {
+                navigate("/admin");
+            } else {
+                navigate("/products"); // user home page
+            }
+
         } catch {
             alert("Login failed");
         }
