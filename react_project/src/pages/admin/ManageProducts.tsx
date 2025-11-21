@@ -101,26 +101,22 @@ export default function ManageProducts() {
     const handleUpdateProduct = async () => {
         if (!editingProduct) return;
 
-        if (!formData.name.trim() || !formData.description.trim() || formData.price <= 0) {
-            alert("Please fill in all fields with valid values");
-            return;
-        }
-
         try {
             setCreating(true);
-            // Note: Update endpoint might need to be added to backend
+
             await api.put(`/Products/${editingProduct.id}`, formData);
 
             alert("Product updated successfully!");
             cancelEdit();
             fetchProducts();
         } catch (err) {
-            alert("Failed to update product. Update endpoint may not be implemented.");
+            alert("Failed to update product");
             console.error(err);
         } finally {
             setCreating(false);
         }
     };
+
 
     return (
         <div className="d-flex">
