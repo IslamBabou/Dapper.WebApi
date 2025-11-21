@@ -1,4 +1,5 @@
-﻿using DapperWebApi.Models;
+﻿using DapperWebApi.DTO;
+using DapperWebApi.Models;
 
 namespace DapperWebApi.Interfaces;
 
@@ -12,5 +13,7 @@ public interface IProductRepository
 
     Task<bool> AddProductImageAsync(ProductImage img);
 
+    Task UpdateProductAsync(int id,CreateProductDto product);
     Task<bool> ProductExistsAsync(int id);
+    Task<bool> DeleteProductAsync(int id);
 }

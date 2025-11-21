@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using DapperWebApi.Interfaces;
 using DapperWebApi.Models;
+using DapperWebApi.DTO;
 using Microsoft.Data.SqlClient;
 using System.Data;
 
@@ -53,6 +54,21 @@ public class ProductRepository : IProductRepository
         return await conn.QueryAsync<Product>(sql);
     }
 
+    public async Task<bool> DeleteProductAsync(int id)
+    {
+        using var conn = Connection;
+
+        // Use your existing exists method
+        if (!await ProductExistsAsync(id))
+            return false;
+
+        var sql = "DELETE FROM Products WHERE Id = @Id";
+        await conn.ExecuteAsync(sql, new { Id = id });
+
+        return true;
+    }
+
+
     public async Task<bool> AddProductImageAsync(ProductImage img)
     {
         var sql = @"
@@ -64,6 +80,25 @@ public class ProductRepository : IProductRepository
         var rows = await conn.ExecuteAsync(sql, img);
         return rows > 0;
     }
+    public async Task UpdateProductAsync(int id, CreateProductDto dto)
+    {
+        using var conn = Connection;
+
+        var sql = @"UPDATE Products 
+                SET Name = @Name,
+                    Description = @Description,
+                    Price = @Price
+                WHERE Id = @Id";
+
+        await conn.ExecuteAsync(sql, new
+        {
+            Id = id,
+            dto.Name,
+            dto.Description,
+            dto.Price
+        });
+    }
+
 
     public async Task<bool> ProductExistsAsync(int id)
     {

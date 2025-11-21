@@ -1,6 +1,7 @@
 ﻿using DapperWebApi.DTO;
 using DapperWebApi.Interfaces;
 using DapperWebApi.Models;
+using DapperWebApi.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -23,7 +24,7 @@ public class ProductsController : ControllerBase
     public async Task<IActionResult> CreateProduct(CreateProductDto dto)
     {
         // get user id from JWT
-        var userId = int.Parse(User.FindFirstValue("id")!);
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
         var product = new Product
         {
@@ -37,6 +38,29 @@ public class ProductsController : ControllerBase
         var productId = await _productRepo.CreateProductAsync(product);
 
         return Ok(new { Message = "Product created", ProductId = productId });
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteProduct(int id)
+    {
+        var deleted = await _productRepo.DeleteProductAsync(id);
+
+        if (!deleted)
+            return NotFound("Product not found");
+
+        return Ok("Product deleted");
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, [FromBody] CreateProductDto dto)
+    {
+        if (!await _productRepo.ProductExistsAsync(id))
+            return NotFound("Product does not exist");
+
+        await _productRepo.UpdateProductAsync(id, dto);
+
+        return Ok(new { message = "Product updated successfully" });
     }
 
     [AllowAnonymous]
