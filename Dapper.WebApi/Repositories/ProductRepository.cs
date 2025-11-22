@@ -4,6 +4,7 @@ using DapperWebApi.Models;
 using DapperWebApi.DTO;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using Dapper.WebApi.Models;
 
 namespace DapperWebApi.Repositories;
 
