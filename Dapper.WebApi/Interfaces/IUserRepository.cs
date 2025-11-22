@@ -1,4 +1,5 @@
-﻿using DapperWebApi.Models;
+﻿using DapperWebApi.DTO;
+using DapperWebApi.Models;
 
 namespace DapperWebApi.Repositories
 {
@@ -12,8 +13,8 @@ namespace DapperWebApi.Repositories
 
         Task<bool> Exists(string username);
 
-        Task<int> CreateAsync(User user);
-
+        Task<int> CreateAsync(User dto);
+        Task UpdateUserAsync(User user);
         Task DeleteAsync(int id);
     }
 }

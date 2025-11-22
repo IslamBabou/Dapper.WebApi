@@ -53,36 +53,46 @@ namespace DapperWebApi.Controllers
         // 3) Register User
         // -----------------------------------------------------
         [HttpPost("register")]
-        [AllowAnonymous]
-        public async Task<IActionResult> Register(RegisterDto dto)
+        public async Task<IActionResult> Register(CreateUserDto dto)
         {
-            // Check if user exists
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            // Check if username already exists
             var existingUser = await _userRepository.GetByUsernameAsync(dto.Username);
             if (existingUser != null)
-                return BadRequest("Username already taken");
+                return BadRequest(new { message = "Username already taken" });
 
-            // Hash password
+            // Hash the password
             var hashedPassword = _passwordService.Hash(dto.Password);
 
-            // Create new User object
+            // Create user entity
             var newUser = new User
             {
                 Username = dto.Username,
                 PasswordHash = hashedPassword,
-                Role = "User" // default role
+                Role = "User", // default
             };
 
-            // Save to DB
-            await _userRepository.CreateAsync(newUser);
+            // Save user
+            var createdUserId = await _userRepository.CreateAsync(newUser);
 
-            // Auto-login response
-            var token = _jwtService.GenerateToken(newUser);
+            // Load user with ID (to use correct values)
+            var savedUser = await _userRepository.GetByIdAsync(createdUserId);
+
+            // Generate JWT token
+            var token = _jwtService.GenerateToken(savedUser!);
 
             return Ok(new
             {
                 message = "User registered successfully",
-                token,
-                role = newUser.Role
+                user = new
+                {
+                    id = savedUser!.Id,
+                    username = savedUser.Username,
+                    role = savedUser.Role
+                },
+                token
             });
         }
     }

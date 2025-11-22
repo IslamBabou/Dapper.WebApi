@@ -8,6 +8,7 @@ import ManageProducts from "./pages/admin/ManageProducts";
 import ProductsPage from "./pages/ProductsPage";
 import AdminRoute from "./Routes/AdminRoute";
 import { setAuthToken } from "./services/api";
+import RegisterPage from "./pages/RegisterPage";
 
 function App() {
     useEffect(() => {
@@ -60,6 +61,12 @@ function App() {
                         </AdminRoute>
                     }
                 />
+                <Route
+                    path="/register"
+                    element={
+                        <RegisterPage  />
+                    } />
+
 
                 {/* Catch all - redirect to login */}
                 <Route path="*" element={<Navigate to="/" replace />} />
