@@ -1,3 +1,5 @@
+using Dapper.WebApi.Models;
+
 namespace DapperWebApi.Models;
 
 public class Product

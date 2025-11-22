@@ -1,4 +1,5 @@
-﻿using DapperWebApi.DTO;
+﻿using Dapper.WebApi.Models;
+using DapperWebApi.DTO;
 using DapperWebApi.Models;
 
 namespace DapperWebApi.Interfaces;

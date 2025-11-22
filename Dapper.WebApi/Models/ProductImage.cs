@@ -1,13 +1,15 @@
-﻿namespace DapperWebApi.Models;
+﻿using DapperWebApi.Models;
 
-public class ProductImage
+namespace Dapper.WebApi.Models
 {
-    public int Id { get; set; }
-    public int ProductId { get; set; }
-    public string FileName { get; set; } = default!;
-    public string? Url { get; set; }
-    public string? RelativePath { get; set; }
-    public bool IsMain { get; set; }
-    public int SortOrder { get; set; }
-    public DateTime CreatedAt { get; set; }
+    public class ProductImage
+    {
+        public int Id { get; set; }
+        public int ProductId { get; set; }
+        public string FileName { get; set; } = string.Empty;
+        public string Url { get; set; } = string.Empty;
+        public bool IsMain { get; set; } = false;
+        public int SortOrder { get; set; } = 0;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    }
 }
