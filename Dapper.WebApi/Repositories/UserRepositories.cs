@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using DapperWebApi.Models;
 using System.Data;
+using System.Data.Common;
 
 namespace DapperWebApi.Repositories
 {
@@ -38,11 +39,25 @@ namespace DapperWebApi.Repositories
             return count > 0;
         }
 
+        public async Task UpdateUserAsync(User user)
+        {
+            using var conn = _db;
+
+
+            var sql = @"UPDATE Users
+                SET Username = @Username,
+                    PasswordHash = @PasswordHash,
+                    Email = @Email
+                WHERE Id = @Id";
+
+            await conn.ExecuteAsync(sql, user);
+        }
+
         public async Task<int> CreateAsync(User user)
         {
             var sql = @"
-                INSERT INTO Users (Username, PasswordHash, Role)
-                VALUES (@Username, @PasswordHash, @Role);
+                INSERT INTO Users (Username, PasswordHash, Email, Role)
+                VALUES (@Username, @PasswordHash, @Email, @Role);
                 SELECT CAST(SCOPE_IDENTITY() as int);
             ";
 

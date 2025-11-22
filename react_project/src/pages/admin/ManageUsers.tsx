@@ -12,7 +12,15 @@ export default function ManageUsers() {
     const [showCreateForm, setShowCreateForm] = useState(false);
     const [newUsername, setNewUsername] = useState("");
     const [newPassword, setNewPassword] = useState("");
+    const [newEmail, setNewEmail] = useState("");
     const [creating, setCreating] = useState(false);
+
+    // Edit states
+    const [editingUser, setEditingUser] = useState<User | null>(null);
+    const [editUsername, setEditUsername] = useState("");
+    const [editPassword, setEditPassword] = useState("");
+    const [editEmail, setEditEmail] = useState("");
+    const [updating, setUpdating] = useState(false);
 
     useEffect(() => {
         fetchUsers();
@@ -33,8 +41,8 @@ export default function ManageUsers() {
     };
 
     const handleCreateUser = async () => {
-        if (!newUsername.trim() || !newPassword.trim()) {
-            alert("Username and password are required");
+        if (!newUsername.trim() || !newPassword.trim() || !newEmail.trim()) {
+            alert("Username, password, and email are required");
             return;
         }
 
@@ -43,11 +51,13 @@ export default function ManageUsers() {
             await api.post("/Auth/register", {
                 username: newUsername,
                 password: newPassword,
+                email: newEmail
             });
 
             alert("User created successfully!");
             setNewUsername("");
             setNewPassword("");
+            setNewEmail("");
             setShowCreateForm(false);
             fetchUsers();
         } catch (err) {
@@ -55,6 +65,54 @@ export default function ManageUsers() {
             console.error(err);
         } finally {
             setCreating(false);
+        }
+    };
+
+    const startEdit = (user: User) => {
+        setEditingUser(user);
+        setEditUsername(user.username);
+        setEditEmail(user.email || "");
+        setEditPassword(""); // Keep empty, only update if changed
+        setShowCreateForm(false); // Close create form if open
+    };
+
+    const cancelEdit = () => {
+        setEditingUser(null);
+        setEditUsername("");
+        setEditEmail("");
+        setEditPassword("");
+    };
+
+    const handleUpdateUser = async () => {
+        if (!editingUser) return;
+
+        if (!editUsername.trim() || !editEmail.trim()) {
+            alert("Username and email are required");
+            return;
+        }
+
+        try {
+            setUpdating(true);
+
+            const updateData: any = {
+                username: editUsername,
+                email: editEmail,
+            };
+
+            if (editPassword.trim()) {
+                updateData.password = editPassword;
+            }
+
+            await api.put(`/Admin/update/${editingUser.id}`, updateData);
+
+            alert("User updated successfully!");
+            cancelEdit();
+            fetchUsers();
+        } catch (err) {
+            alert("Failed to update user. Update endpoint may not be implemented on backend.");
+            console.error(err);
+        } finally {
+            setUpdating(false);
         }
     };
 
@@ -82,7 +140,11 @@ export default function ManageUsers() {
                     <h2>Manage Users</h2>
                     <button
                         className="btn btn-primary"
-                        onClick={() => setShowCreateForm(!showCreateForm)}
+                        onClick={() => {
+                            setShowCreateForm(!showCreateForm);
+                            setEditingUser(null); // Close edit form if open
+                        }}
+                        disabled={editingUser !== null}
                     >
                         {showCreateForm ? "Cancel" : "+ Create New User"}
                     </button>
@@ -90,18 +152,30 @@ export default function ManageUsers() {
 
                 {/* Create User Form */}
                 {showCreateForm && (
-                    <div className="card mb-4">
+                    <div className="card mb-4 border-primary">
                         <div className="card-body">
                             <h5 className="card-title">Create New User</h5>
-                            <div className="mb-3">
-                                <label className="form-label">Username</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    value={newUsername}
-                                    onChange={(e) => setNewUsername(e.target.value)}
-                                    placeholder="Enter username"
-                                />
+                            <div className="row">
+                                <div className="col-md-6 mb-3">
+                                    <label className="form-label">Username</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        value={newUsername}
+                                        onChange={(e) => setNewUsername(e.target.value)}
+                                        placeholder="Enter username"
+                                    />
+                                </div>
+                                <div className="col-md-6 mb-3">
+                                    <label className="form-label">Email</label>
+                                    <input
+                                        type="email"
+                                        className="form-control"
+                                        value={newEmail}
+                                        onChange={(e) => setNewEmail(e.target.value)}
+                                        placeholder="Enter email"
+                                    />
+                                </div>
                             </div>
                             <div className="mb-3">
                                 <label className="form-label">Password</label>
@@ -120,6 +194,67 @@ export default function ManageUsers() {
                             >
                                 {creating ? "Creating..." : "Create User"}
                             </button>
+                        </div>
+                    </div>
+                )}
+
+                {/* Edit User Form */}
+                {editingUser && (
+                    <div className="card mb-4 border-warning">
+                        <div className="card-body">
+                            <h5 className="card-title text-warning">
+                                Edit User: {editingUser.username} (ID: {editingUser.id})
+                            </h5>
+                            <div className="row">
+                                <div className="col-md-6 mb-3">
+                                    <label className="form-label">Username</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        value={editUsername}
+                                        onChange={(e) => setEditUsername(e.target.value)}
+                                        placeholder="Enter username"
+                                    />
+                                </div>
+                                <div className="col-md-6 mb-3">
+                                    <label className="form-label">Email</label>
+                                    <input
+                                        type="email"
+                                        className="form-control"
+                                        value={editEmail}
+                                        onChange={(e) => setEditEmail(e.target.value)}
+                                        placeholder="Enter email"
+                                    />
+                                </div>
+                            </div>
+                            <div className="mb-3">
+                                <label className="form-label">
+                                    New Password <span className="text-muted">(leave empty to keep current)</span>
+                                </label>
+                                <input
+                                    type="password"
+                                    className="form-control"
+                                    value={editPassword}
+                                    onChange={(e) => setEditPassword(e.target.value)}
+                                    placeholder="Enter new password (optional)"
+                                />
+                            </div>
+                            <div className="d-flex gap-2">
+                                <button
+                                    className="btn btn-warning"
+                                    onClick={handleUpdateUser}
+                                    disabled={updating}
+                                >
+                                    {updating ? "Updating..." : "Update User"}
+                                </button>
+                                <button
+                                    className="btn btn-secondary"
+                                    onClick={cancelEdit}
+                                    disabled={updating}
+                                >
+                                    Cancel
+                                </button>
+                            </div>
                         </div>
                     </div>
                 )}
@@ -154,6 +289,7 @@ export default function ManageUsers() {
                                             <tr>
                                                 <th>ID</th>
                                                 <th>Username</th>
+                                                <th>Email</th>
                                                 <th>Role</th>
                                                 <th>Actions</th>
                                             </tr>
@@ -163,21 +299,31 @@ export default function ManageUsers() {
                                                 <tr key={user.id}>
                                                     <td>{user.id}</td>
                                                     <td>{user.username}</td>
+                                                    <td>{user.email || <span className="text-muted">N/A</span>}</td>
                                                     <td>
                                                         <span className={`badge ${user.role === "Admin"
-                                                                ? "bg-danger"
-                                                                : "bg-primary"
+                                                            ? "bg-danger"
+                                                            : "bg-primary"
                                                             }`}>
                                                             {user.role}
                                                         </span>
                                                     </td>
                                                     <td>
-                                                        <button
-                                                            className="btn btn-sm btn-danger"
-                                                            onClick={() => handleDeleteUser(user.id, user.username)}
-                                                        >
-                                                            Delete
-                                                        </button>
+                                                        <div className="btn-group" role="group">
+                                                            <button
+                                                                className="btn btn-sm btn-outline-warning"
+                                                                onClick={() => startEdit(user)}
+                                                                disabled={editingUser !== null || showCreateForm}
+                                                            >
+                                                                Edit
+                                                            </button>
+                                                            <button
+                                                                className="btn btn-sm btn-outline-danger"
+                                                                onClick={() => handleDeleteUser(user.id, user.username)}
+                                                            >
+                                                                Delete
+                                                            </button>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             ))}
@@ -186,6 +332,13 @@ export default function ManageUsers() {
                                 </div>
                             )}
                         </div>
+                    </div>
+                )}
+
+                {/* Info Alert */}
+                {editingUser && (
+                    <div className="alert alert-info mt-4" role="alert">
+                        <strong>Note:</strong> When editing a user, leave the password field empty to keep their current password unchanged.
                     </div>
                 )}
             </div>
