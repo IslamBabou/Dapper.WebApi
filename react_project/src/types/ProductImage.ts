@@ -8,9 +8,12 @@ export interface ProductImage {
     createdAt: string;
 }
 
-export interface UploadProductImageDto {
-    File: File;
-    ProductId: number;
-    IsMain: boolean;
-    SortOrder: number;
+export interface ProductWithImages {
+    id: number;
+    name: string;
+    description: string;
+    price: number;
+    createdAt?: string;
+    mainImage?: ProductImage;
+    images?: ProductImage[];
 }

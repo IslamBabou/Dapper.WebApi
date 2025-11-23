@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect } from "react";
 import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ManageUsers from "./pages/admin/ManageUsers";
 import ManageAdmins from "./pages/admin/ManageAdmins";
@@ -8,7 +9,6 @@ import ManageProducts from "./pages/admin/ManageProducts";
 import ProductsPage from "./pages/ProductsPage";
 import AdminRoute from "./Routes/AdminRoute";
 import { setAuthToken } from "./services/api";
-import RegisterPage from "./pages/RegisterPage";
 
 function App() {
     useEffect(() => {
@@ -23,9 +23,11 @@ function App() {
         <BrowserRouter>
             <Routes>
                 {/* Public Routes */}
-                <Route path="/" element={<LoginPage />} />
+                <Route path="/" element={<ProductsPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
 
-                {/* User Routes */}
+                {/* User Routes - Keep for backward compatibility */}
                 <Route path="/products" element={<ProductsPage />} />
 
                 {/* Admin Routes */}
@@ -61,12 +63,6 @@ function App() {
                         </AdminRoute>
                     }
                 />
-                <Route
-                    path="/register"
-                    element={
-                        <RegisterPage  />
-                    } />
-
 
                 {/* Catch all - redirect to login */}
                 <Route path="*" element={<Navigate to="/" replace />} />

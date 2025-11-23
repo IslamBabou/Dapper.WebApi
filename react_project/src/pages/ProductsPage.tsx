@@ -2,21 +2,7 @@
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import type { Product } from "../types/Products";
-
-interface ProductImage {
-    id: number;
-    productId: number;
-    fileName: string;
-    url: string;
-    isMain: boolean;
-    sortOrder: number;
-    createdAt: string;
-}
-
-interface ProductWithImages extends Product {
-    mainImage?: ProductImage;
-    images?: ProductImage[];
-}
+import type { ProductImage, ProductWithImages } from "../types/ProductImage";
 
 export default function ProductsPage() {
     const [products, setProducts] = useState<ProductWithImages[]>([]);
@@ -25,7 +11,12 @@ export default function ProductsPage() {
     const [searchTerm, setSearchTerm] = useState("");
 
     const navigate = useNavigate();
-    const username = localStorage.getItem("username") || "User";
+
+    // Check authentication
+    const token = localStorage.getItem("token");
+    const storedUsername = localStorage.getItem("username");
+    const username = storedUsername || "Guest";
+    const isAuthenticated = !!token;
 
     useEffect(() => {
         fetchProducts();
@@ -77,6 +68,14 @@ export default function ProductsPage() {
         navigate("/");
     };
 
+    const handleLogin = () => {
+        navigate("/login");
+    };
+
+    const handleRegister = () => {
+        navigate("/register");
+    };
+
     const filteredProducts = products.filter(product =>
         product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         product.description.toLowerCase().includes(searchTerm.toLowerCase())
@@ -88,11 +87,37 @@ export default function ProductsPage() {
             <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
                 <div className="container-fluid">
                     <span className="navbar-brand">🛍️ Product Catalog</span>
+
+                    {/* Right side - Auth buttons or user info */}
                     <div className="d-flex align-items-center gap-3">
-                        <span className="text-white">Welcome, {username}!</span>
-                        <button className="btn btn-outline-light btn-sm" onClick={handleLogout}>
-                            Logout
-                        </button>
+                        {isAuthenticated ? (
+                            <>
+                                <span className="text-white">
+                                    👤 Welcome, <strong>{username}</strong>!
+                                </span>
+                                <button
+                                    className="btn btn-outline-light btn-sm"
+                                    onClick={handleLogout}
+                                >
+                                    Logout
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <button
+                                    className="btn btn-light btn-sm"
+                                    onClick={handleLogin}
+                                >
+                                    Login
+                                </button>
+                                <button
+                                    className="btn btn-outline-light btn-sm"
+                                    onClick={handleRegister}
+                                >
+                                    Register
+                                </button>
+                            </>
+                        )}
                     </div>
                 </div>
             </nav>
@@ -134,10 +159,19 @@ export default function ProductsPage() {
                 {/* Products Grid */}
                 {!loading && !error && (
                     <>
-                        <h3 className="mb-4">
-                            Available Products
-                            {searchTerm && ` (${filteredProducts.length} found)`}
-                        </h3>
+                        <div className="d-flex justify-content-between align-items-center mb-4">
+                            <h3 className="mb-0">
+                                Available Products
+                                {searchTerm && ` (${filteredProducts.length} found)`}
+                            </h3>
+                            {!isAuthenticated && (
+                                <div className="alert alert-info mb-0 py-2">
+                                    <small>
+                                        💡 <strong>Login</strong> to purchase products
+                                    </small>
+                                </div>
+                            )}
+                        </div>
 
                         {filteredProducts.length === 0 ? (
                             <div className="alert alert-info text-center">
@@ -152,10 +186,10 @@ export default function ProductsPage() {
                                         <div className="card h-100 shadow-sm hover-shadow">
                                             {/* Product Image */}
                                             {product.mainImage ? (
-                                                <div className="position-relative">
+                                                <div className="position-relative overflow-hidden">
                                                     <img
                                                         src={product.mainImage.url}
-                                                        className="card-img-top"
+                                                        className="card-img-top product-image"
                                                         alt={product.name}
                                                         style={{ height: "200px", objectFit: "cover" }}
                                                     />
@@ -208,14 +242,11 @@ export default function ProductsPage() {
                     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
                     transform: translateY(-5px);
                 }
-                .card-img-top {
+                .product-image {
                     transition: transform 0.3s ease-in-out;
                 }
-                .card:hover .card-img-top {
+                .card:hover .product-image {
                     transform: scale(1.05);
-                }
-                .card {
-                    overflow: hidden;
                 }
             `}</style>
         </div>
