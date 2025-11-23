@@ -1,51 +1,70 @@
-import { useState } from "react";
+﻿import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import api, { setAuthToken } from "../services/api";
-import { Link, useNavigate } from "react-router-dom";
 
 export default function RegisterPage() {
     const navigate = useNavigate();
-
     const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
 
     const register = async () => {
-        if (!username.trim() || !password.trim()) {
-            alert("Please fill in all fields");
+        setError("");
+
+        // Validation
+        if (!username.trim() || !email.trim() || !password.trim()) {
+            setError("All fields are required");
             return;
         }
 
         if (password !== confirmPassword) {
-            alert("Passwords do not match");
+            setError("Passwords do not match");
+            return;
+        }
+
+        if (password.length < 6) {
+            setError("Password must be at least 6 characters");
+            return;
+        }
+
+        // Basic email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            setError("Please enter a valid email address");
             return;
         }
 
         try {
             setLoading(true);
-
             const res = await api.post("/Auth/register", {
                 username,
+                email,
                 password,
             });
 
             const token = res.data.token;
-            const role = res.data.user.role;
+            const role = res.data.user?.role || "User";
 
-            // Save token & role
+            // Save token, role, and username
             localStorage.setItem("token", token);
             localStorage.setItem("role", role);
+            localStorage.setItem("username", username);
             setAuthToken(token);
 
             alert("Registered successfully!");
 
             // Redirect based on role
-            if (role === "Admin") navigate("/admin");
-            else navigate("/products"); // or user home page
-        } catch (err) {
+            if (role === "Admin") {
+                navigate("/admin");
+            } else {
+                navigate("/");  // Home page (products)
+            }
+        } catch (err: any) {
             console.error(err);
-            alert("Registration failed");
+            setError(err.response?.data?.message || "Registration failed. Username or email may already exist.");
         } finally {
             setLoading(false);
         }
@@ -53,42 +72,90 @@ export default function RegisterPage() {
 
     return (
         <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
-            <div className="card shadow-lg p-4" style={{ width: "380px" }}>
-                <h2 className="mb-3">Create an Account</h2>
+            <div className="card shadow-lg p-4" style={{ width: "400px" }}>
+                <h2 className="mb-3 text-center">Create an Account</h2>
 
-                <input
-                    className="form-control mb-2"
-                    placeholder="Username"
-                    onChange={(e) => setUsername(e.target.value)}
-                />
+                {error && (
+                    <div className="alert alert-danger alert-dismissible fade show" role="alert">
+                        {error}
+                        <button
+                            type="button"
+                            className="btn-close"
+                            onClick={() => setError("")}
+                            aria-label="Close"
+                        ></button>
+                    </div>
+                )}
 
-                <input
-                    className="form-control mb-2"
-                    type="password"
-                    placeholder="Password"
-                    onChange={(e) => setPassword(e.target.value)}
-                />
+                <div className="mb-3">
+                    <label className="form-label">Username</label>
+                    <input
+                        className="form-control"
+                        type="text"
+                        placeholder="Enter username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        disabled={loading}
+                    />
+                </div>
 
-                <input
-                    className="form-control mb-3"
-                    type="password"
-                    placeholder="Confirm Password"
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                />
+                <div className="mb-3">
+                    <label className="form-label">Email</label>
+                    <input
+                        className="form-control"
+                        type="email"
+                        placeholder="Enter email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        disabled={loading}
+                    />
+                </div>
+
+                <div className="mb-3">
+                    <label className="form-label">Password</label>
+                    <input
+                        className="form-control"
+                        type="password"
+                        placeholder="Enter password (min 6 characters)"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        disabled={loading}
+                    />
+                </div>
+
+                <div className="mb-3">
+                    <label className="form-label">Confirm Password</label>
+                    <input
+                        className="form-control"
+                        type="password"
+                        placeholder="Confirm password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        disabled={loading}
+                    />
+                </div>
 
                 <button
-                    className="btn btn-primary w-100"
+                    className="btn btn-primary w-100 mb-3"
                     onClick={register}
                     disabled={loading}
                 >
                     {loading ? "Registering..." : "Register"}
                 </button>
 
-                <div className="mt-3 text-center">
-                    <small>
+                <div className="text-center">
+                    <small className="text-muted">
                         Already have an account?{" "}
-                        <Link to="/">Login</Link>
+                        <Link to="/login" className="text-primary fw-bold">
+                            Login here
+                        </Link>
                     </small>
+                </div>
+
+                <div className="text-center mt-2">
+                    <Link to="/" className="text-muted small">
+                        Continue browsing products →
+                    </Link>
                 </div>
             </div>
         </div>
