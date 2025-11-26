@@ -3,12 +3,14 @@ import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import type { Product } from "../types/Products";
 import type { ProductImage, ProductWithImages } from "../types/ProductImage";
+import ProductModal from "../components/ProductDetailsModal";
 
 export default function ProductsPage() {
     const [products, setProducts] = useState<ProductWithImages[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
+    const [selectedProduct, setSelectedProduct] = useState<ProductWithImages | null>(null);
 
     const navigate = useNavigate();
 
@@ -74,6 +76,14 @@ export default function ProductsPage() {
 
     const handleRegister = () => {
         navigate("/register");
+    };
+
+    const openModal = (product: ProductWithImages) => {
+        setSelectedProduct(product);
+    };
+
+    const closeModal = () => {
+        setSelectedProduct(null);
     };
 
     const filteredProducts = products.filter(product =>
@@ -220,7 +230,10 @@ export default function ProductsPage() {
                                                     <h4 className="text-success mb-0">
                                                         ${product.price.toFixed(2)}
                                                     </h4>
-                                                    <button className="btn btn-sm btn-primary">
+                                                    <button
+                                                        className="btn btn-sm btn-primary"
+                                                        onClick={() => openModal(product)}
+                                                    >
                                                         View Details
                                                     </button>
                                                 </div>
@@ -229,6 +242,14 @@ export default function ProductsPage() {
                                     </div>
                                 ))}
                             </div>
+                        )}
+
+                        {/* Product Details Modal */}
+                        {selectedProduct && (
+                            <ProductModal
+                                product={selectedProduct}
+                                onClose={closeModal}
+                            />
                         )}
                     </>
                 )}
