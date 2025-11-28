@@ -1,6 +1,4 @@
-﻿using DapperWebApi.Models;
-
-namespace Dapper.WebApi.Models
+﻿namespace Dapper.WebApi.Models
 {
     public class ProductImage
     {

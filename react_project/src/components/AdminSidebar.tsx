@@ -4,10 +4,9 @@ export default function AdminSidebar() {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        
         localStorage.removeItem("token");
         localStorage.removeItem("role");
-        navigate("/"); 
+        navigate("/");
     };
 
     return (

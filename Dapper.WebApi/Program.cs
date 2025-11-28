@@ -43,7 +43,6 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-
 // =========================
 // SWAGGER + JWT
 // =========================
@@ -85,13 +84,11 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-
 // =========================
 // DATABASE (Dapper)
 // =========================
 builder.Services.AddScoped<IDbConnection>(sp =>
     new SqlConnection(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 
 // =========================
 // DEPENDENCY INJECTION
@@ -103,10 +100,9 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IFileStorageService, FileStorageService>();
 builder.Services.AddScoped<IProductImageRepository, ProductImageRepository>();
-builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-
-
+builder.Services.AddScoped<IOrderItemRepository, OrderItemRepository>();
+builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 
 // =========================
 // CORS
@@ -125,7 +121,6 @@ builder.Services.AddCors(options =>
             .AllowCredentials();
     });
 });
-
 
 // =========================
 // BUILD APP

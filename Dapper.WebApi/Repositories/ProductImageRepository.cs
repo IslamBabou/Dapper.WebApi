@@ -1,8 +1,7 @@
-﻿using System.Data;
-using Dapper;
-using Microsoft.Data.SqlClient;
-using Dapper.WebApi.Interfaces;
+﻿using Dapper.WebApi.Interfaces;
 using Dapper.WebApi.Models;
+using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace Dapper.WebApi.Repositories
 {
@@ -110,16 +109,16 @@ namespace Dapper.WebApi.Repositories
             {
                 // First, unset all main images for this product
                 const string unsetQuery = @"
-                    UPDATE ProductImages 
-                    SET IsMain = 0 
+                    UPDATE ProductImages
+                    SET IsMain = 0
                     WHERE ProductId = @ProductId";
 
                 await connection.ExecuteAsync(unsetQuery, new { ProductId = productId }, transaction);
 
                 // Then set the specified image as main
                 const string setQuery = @"
-                    UPDATE ProductImages 
-                    SET IsMain = 1 
+                    UPDATE ProductImages
+                    SET IsMain = 1
                     WHERE Id = @ImageId AND ProductId = @ProductId";
 
                 var affectedRows = await connection.ExecuteAsync(setQuery,

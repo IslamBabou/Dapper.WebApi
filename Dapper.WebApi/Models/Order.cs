@@ -7,10 +7,12 @@
 
     // Address fields
     public string Wilaya { get; set; } = null!;
+
     public string Commune { get; set; } = null!;
-    
+
     // Pricing
     public decimal TotalProductsPrice { get; set; }
+
     public decimal ShippingPrice { get; set; }
     public decimal TotalPrice { get; set; }
 

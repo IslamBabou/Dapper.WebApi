@@ -1,6 +1,5 @@
-﻿using System.Data;
-using Dapper;
-using DapperWebApi.Models;
+﻿using Dapper;
+using System.Data;
 
 public class OrderItemRepository : IOrderItemRepository
 {

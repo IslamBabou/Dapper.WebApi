@@ -1,10 +1,10 @@
 ﻿using Dapper;
+using Dapper.WebApi.Models;
+using DapperWebApi.DTO;
 using DapperWebApi.Interfaces;
 using DapperWebApi.Models;
-using DapperWebApi.DTO;
 using Microsoft.Data.SqlClient;
 using System.Data;
-using Dapper.WebApi.Models;
 
 namespace DapperWebApi.Repositories;
 
@@ -69,7 +69,6 @@ public class ProductRepository : IProductRepository
         return true;
     }
 
-
     public async Task<bool> AddProductImageAsync(ProductImage img)
     {
         var sql = @"
@@ -81,11 +80,12 @@ public class ProductRepository : IProductRepository
         var rows = await conn.ExecuteAsync(sql, img);
         return rows > 0;
     }
+
     public async Task UpdateProductAsync(int id, CreateProductDto dto)
     {
         using var conn = Connection;
 
-        var sql = @"UPDATE Products 
+        var sql = @"UPDATE Products
                 SET Name = @Name,
                     Description = @Description,
                     Price = @Price
@@ -99,7 +99,6 @@ public class ProductRepository : IProductRepository
             dto.Price
         });
     }
-
 
     public async Task<bool> ProductExistsAsync(int id)
     {

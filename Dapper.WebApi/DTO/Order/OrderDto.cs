@@ -1,14 +1,18 @@
-﻿public class OrderDto
+﻿namespace DapperWebApi.DTO;
+
+public class OrderDto
 {
     public int Id { get; set; }
     public int UserId { get; set; }
 
     // Address
     public string Wilaya { get; set; } = null!;
+
     public string Commune { get; set; } = null!;
 
     // Pricing
     public decimal TotalProductsPrice { get; set; }
+
     public decimal ShippingPrice { get; set; }
     public decimal TotalPrice { get; set; }
 
