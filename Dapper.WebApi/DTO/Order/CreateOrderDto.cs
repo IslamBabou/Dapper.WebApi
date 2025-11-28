@@ -1,4 +1,6 @@
-﻿public class CreateOrderDto
+﻿namespace DapperWebApi.DTO;
+
+public class CreateOrderDto
 {
     public int UserId { get; set; }
 
@@ -7,6 +9,7 @@
 
     // Address inside order
     public string Wilaya { get; set; } = null!;
+
     public string Commune { get; set; } = null!;
 
     // Shipping

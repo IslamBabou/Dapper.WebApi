@@ -1,7 +1,6 @@
 ﻿using DapperWebApi.DTO;
 using DapperWebApi.Interfaces;
 using DapperWebApi.Models;
-using DapperWebApi.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;

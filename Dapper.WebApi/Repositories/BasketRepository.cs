@@ -1,6 +1,5 @@
 ﻿using Dapper;
 using System.Data;
-using DapperWebApi.Interfaces;
 
 public class BasketRepository : IBasketRepository
 {
@@ -33,7 +32,7 @@ public class BasketRepository : IBasketRepository
         var sql = @"MERGE BasketItems AS t
                     USING (SELECT @BasketId AS BasketId, @ProductId AS ProductId) AS src
                     ON t.BasketId = src.BasketId AND t.ProductId = src.ProductId
-                    WHEN MATCHED THEN 
+                    WHEN MATCHED THEN
                         UPDATE SET Quantity = Quantity + @Quantity
                     WHEN NOT MATCHED THEN
                         INSERT (BasketId, ProductId, Quantity)

@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Dapper.WebApi.DTO;
-using Dapper.WebApi.Interfaces;
+﻿using Dapper.WebApi.Dto;
 using Dapper.WebApi.Models;
+using Dapper.WebApi.Interfaces;
 using Dapper.WebApi.Services;
 using DapperWebApi.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Dapper.WebApi.Controllers
 {

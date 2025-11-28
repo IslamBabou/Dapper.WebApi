@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using DapperWebApi.Models;
 using System.Data;
-using System.Data.Common;
 
 namespace DapperWebApi.Repositories
 {
@@ -42,7 +41,6 @@ namespace DapperWebApi.Repositories
         public async Task UpdateUserAsync(User user)
         {
             using var conn = _db;
-
 
             var sql = @"UPDATE Users
                 SET Username = @Username,

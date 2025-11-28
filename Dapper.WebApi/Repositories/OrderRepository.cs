@@ -1,6 +1,5 @@
-﻿using System.Data;
-using Dapper;
-using DapperWebApi.Models;
+﻿using Dapper;
+using System.Data;
 
 public class OrderRepository : IOrderRepository
 {
@@ -15,17 +14,24 @@ public class OrderRepository : IOrderRepository
     {
         string sql = @"
             INSERT INTO Orders
-            (UserId, Wilaya, Commune, Street, PostalCode,
+            (UserId, Wilaya, Commune,
              TotalProductsPrice, ShippingPrice, TotalPrice, Status, CreatedAt)
             VALUES
-            (@UserId, @Wilaya, @Commune, @Street, @PostalCode,
+            (@UserId, @Wilaya, @Commune,
              @TotalProductsPrice, @ShippingPrice, @TotalPrice, @Status, @CreatedAt);
-            
+
             SELECT CAST(SCOPE_IDENTITY() AS INT);
         ";
 
         var id = await _connection.ExecuteScalarAsync<int>(sql, order);
         return id;
+    }
+
+    public async Task<IEnumerable<Order>> GetAllOrdersAsync()
+    {
+        string sql = "SELECT * FROM Orders";
+
+        return await _connection.QueryAsync<Order>(sql);
     }
 
     public async Task<Order?> GetOrderByIdAsync(int id)

@@ -1,4 +1,4 @@
-﻿namespace Dapper.WebApi.DTO
+﻿namespace Dapper.WebApi.Dto
 {
     /// <summary>
     /// DTO for uploading product image

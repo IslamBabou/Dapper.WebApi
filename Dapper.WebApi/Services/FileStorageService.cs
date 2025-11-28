@@ -5,7 +5,9 @@ namespace Dapper.WebApi.Services
     public interface IFileStorageService
     {
         Task<(string fileName, string url)> SaveFileAsync(IFormFile file, int productId);
+
         Task<bool> DeleteFileAsync(string fileName);
+
         bool IsValidImageFile(IFormFile file);
     }
 
